@@ -37,7 +37,6 @@ class EmployeeController {
 
   }
 
-
   static async delete(req, res) {
     let id = +req.params.id
 
@@ -51,6 +50,27 @@ class EmployeeController {
         res.status(400).json(result) // bad request
       }
 
+    } catch (err) {
+      res.status(500).json(err) // internal server error
+    }
+  }
+
+  static async update(req, res) {
+    const id = +req.params.id
+    const { name, job, age, city } = req.body
+
+    try {
+      let result = await Employee.update(
+        { name, job, age, city },
+        { where: { id } }
+      )
+
+      if (result) {
+        let updateNotification = { message: `An employee '${name}' has been updated` }
+        res.status(201).json(updateNotification) // updated success
+      } else {
+        res.status(400).json(result) // bad request
+      }
     } catch (err) {
       res.status(500).json(err) // internal server error
     }
